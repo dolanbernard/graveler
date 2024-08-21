@@ -12,9 +12,27 @@
 #define THREADS_PER_BLOCK (512)
 #define BLOCKS_PER_GRID (131072)
 
+__global__
+void graveler_streaks(size_t n, uint32_t *one_counts, curandState *rand_states, uint64_t seed) {
+  size_t i;
+  size_t index = blockIdx.x * blockDim.x + threadIdx.x;
+  size_t num_threads = gridDim.x * blockDim.x;
+  curandState *state = rand_states + index;
+  curand_init(seed, index, 0, state);
+
+  for(i = index; i < N; i += num_threads) {
+    uint32_t one_count = 0;
+    for(size_t rolls = 0; rolls < 231; rolls++) {
+      uint32_t roll = (uint32_t)(curand_uniform(state) * 3.0 + 0.5f);
+      if(roll != 0) break;
+      ++one_count;
+    }
+    one_counts[i] = one_count;
+  }
+}
 
 __global__
-void graveler(size_t n, uint32_t *one_counts, curandState *rand_states, uint64_t seed) {
+void graveler_total(size_t n, uint32_t *one_counts, curandState *rand_states, uint64_t seed) {
   size_t i;
   size_t index = blockIdx.x * blockDim.x + threadIdx.x;
   size_t num_threads = gridDim.x * blockDim.x;
@@ -40,9 +58,15 @@ int main(void) {
   cudaMalloc(&d_one_counts, N * sizeof(uint32_t));
   h_one_counts = (uint32_t *)malloc(N * sizeof(uint32_t));
 
+  int default_device;
+  cudaDeviceProp device_props;
+  cudaGetDevice(&default_device);
+  cudaGetDeviceProperties(&device_props, default_device);
+  fprintf(stdout, "Using device %s\n", device_props.name);
+
   DECLARE_TIMER(GravelerKernelTimer);
   START_TIMER(GravelerKernelTimer);
-  graveler<<<BLOCKS_PER_GRID, THREADS_PER_BLOCK>>>(N, d_one_counts, d_rand_states, time(0));
+  graveler_streaks<<<BLOCKS_PER_GRID, THREADS_PER_BLOCK>>>(N, d_one_counts, d_rand_states, time(0));
   cudaDeviceSynchronize();
   STOP_TIMER(GravelerKernelTimer);
 

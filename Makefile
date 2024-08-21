@@ -2,6 +2,7 @@
 CC=nvcc
 PROG=target/graveler
 SOURCE=src/graveler.cu
+CFLAGS=
 DFLAGS=-DEN_TIME
 
 .PHONY: all test clean
@@ -9,7 +10,7 @@ DFLAGS=-DEN_TIME
 
 all: $(PROG)
 	-mkdir -p target
-	$(CC) $(DFLAGS) $(SOURCE) -o $(PROG)
+	$(CC) $(CFLAGS) $(DFLAGS) $(SOURCE) -o $(PROG)
 
 $(PROG): $(SOURCE)
 
