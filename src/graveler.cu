@@ -5,9 +5,9 @@
 #include <curand.h>
 #include <curand_kernel.h>
 
+#include "timers.h"
+
 #define N (1000000000)
-//#define N (1000000)
-//#define N (100)
 
 #define THREADS_PER_BLOCK (512)
 #define BLOCKS_PER_GRID (131072)
@@ -40,16 +40,11 @@ int main(void) {
   cudaMalloc(&d_one_counts, N * sizeof(uint32_t));
   h_one_counts = (uint32_t *)malloc(N * sizeof(uint32_t));
 
+  DECLARE_TIMER(GravelerKernelTimer);
+  START_TIMER(GravelerKernelTimer);
   graveler<<<BLOCKS_PER_GRID, THREADS_PER_BLOCK>>>(N, d_one_counts, d_rand_states, time(0));
-  cudaError_t err = cudaGetLastError();
-  if (err != cudaSuccess) {
-    printf("%s\n", cudaGetErrorString(err));
-  }
   cudaDeviceSynchronize();
-  err = cudaDeviceSynchronize();
-  if (err != cudaSuccess) {
-    printf("%s\n", cudaGetErrorString(err));
-  }
+  STOP_TIMER(GravelerKernelTimer);
 
   cudaMemcpy(h_one_counts, d_one_counts, N * sizeof(uint32_t), cudaMemcpyDeviceToHost);
 
@@ -59,7 +54,8 @@ int main(void) {
       max_ones = h_one_counts[i];
     }
   }
-  fprintf(stdout, "%ld\n", max_ones);
+  fprintf(stdout, "Max ones rolled: %u\n", max_ones);
+  PRINT_TIMER(GravelerKernelTimer);
 
   cudaFree(d_one_counts);
   cudaFree(d_rand_states);

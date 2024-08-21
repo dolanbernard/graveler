@@ -1,13 +1,14 @@
 
 CC=nvcc
-PROG=graveler
+PROG=target/graveler
 SOURCE=src/graveler.cu
 
 .PHONY: all test clean
 .SILENT: all test clean
 
 all: $(PROG)
-	$(CC) $(SOURCE) -o $(PROG)
+	-mkdir -p target
+	$(CC) $(SOURCE) -o $(PROG) -DEN_TIME
 
 $(PROG): $(SOURCE)
 
