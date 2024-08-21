@@ -16,7 +16,7 @@ The current configuration of this program ends each attempt as soon as a non-one
 
 ## Results
 
-Using my RTX 2080 Ti, execution times were around 0.71 seconds for 1 billion attempts. The max number of ones rolled is usually between 10 and 13. You can probably get better times than me if you have a newer GPU. See section [Building and Running](#building-and-running) for info on how to configure the kernel parameters for your GPU and running the program.
+Using my RTX 2080 Ti, execution times were around 0.066 seconds for 1 billion attempts. The max number of ones rolled is usually between 10 and 13. You can probably get better times than me if you have a newer GPU. See section [Building and Running](#building-and-running) for info on how to configure the kernel parameters for your GPU and running the program.
 
 The following results come from my attempts using an RTX 2080 Ti. You can probably get better times than me if you have a newer GPU. See section [Building and Running](#building-and-running) for info on how to configure the kernel parameters for your GPU and running the program.
 
@@ -24,8 +24,8 @@ I've separated the results by run configuration (detailed [here](#differences-in
 
 | Configuration | Typical Execution Time (s) | Typical Max Counts |
 |---------------|----------------------------|--------------------|
-| Streaks       | 0.71                       | 10-13              |
-| Total         | 2.96                       | 75-80              |
+| Streaks       | 0.066                      | 10-13              |
+| Total         | 2.93                       | 75-80              |
 
 ## Building and Running
 
