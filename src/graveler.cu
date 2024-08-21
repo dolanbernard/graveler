@@ -5,12 +5,12 @@
 #include <curand.h>
 #include <curand_kernel.h>
 
-//#define N (1000000000)
-#define N (1000000)
+#define N (1000000000)
+//#define N (1000000)
 //#define N (100)
 
-#define BLOCKS_PER_GRID (1)
-#define THREADS_PER_BLOCK (256)
+#define THREADS_PER_BLOCK (512)
+#define BLOCKS_PER_GRID (131072)
 
 
 __global__
@@ -19,20 +19,18 @@ void graveler(size_t n, uint32_t *one_counts, curandState *rand_states, uint64_t
   int tid = blockIdx.x * blockDim.x + threadIdx.x;
   int nthreads = gridDim.x * blockDim.x;
   curandState *state = rand_states + tid;
-  curand_init(seed, tid, 0, state);
+  curand_init(seed + tid, tid, 0, state);
 
   for(i = tid; i < N; i += nthreads) {
-    float rand = curand_uniform(state) * 4.0 + 0.999999;// TODO:
     uint32_t one_count = 0;
     for(size_t rolls = 0; rolls < 231; rolls++) {
-      if(((int)rand) % 4 == 0) {
+      uint32_t roll = (uint32_t)(curand_uniform(state) * 3.0 + 0.5f);
+      if(roll == 0) {
         ++one_count;
       }
     }
     one_counts[i] = one_count;
-    //one_counts[i] = curand_uniform(state) * 100;
   }
-  if(tid < N) one_counts[tid] = 69;
 }
 
 int main(void) {
