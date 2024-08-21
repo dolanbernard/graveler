@@ -15,13 +15,13 @@
 
 __global__
 void graveler(size_t n, uint32_t *one_counts, curandState *rand_states, uint64_t seed) {
-  int i;
-  int tid = blockIdx.x * blockDim.x + threadIdx.x;
-  int nthreads = gridDim.x * blockDim.x;
-  curandState *state = rand_states + tid;
-  curand_init(seed + tid, tid, 0, state);
+  size_t i;
+  size_t index = blockIdx.x * blockDim.x + threadIdx.x;
+  size_t num_threads = gridDim.x * blockDim.x;
+  curandState *state = rand_states + index;
+  curand_init(seed, index, 0, state);
 
-  for(i = tid; i < N; i += nthreads) {
+  for(i = index; i < N; i += num_threads) {
     uint32_t one_count = 0;
     for(size_t rolls = 0; rolls < 231; rolls++) {
       uint32_t roll = (uint32_t)(curand_uniform(state) * 3.0 + 0.5f);
