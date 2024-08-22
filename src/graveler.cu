@@ -94,7 +94,7 @@ int main(void) {
       min_ones = h_one_counts[i];
     }
   }
-  fprintf(stdout, "\nNumber of attempts: %lu\nMax ones rolled: %u\nMin ones rolled:%u\nAverage ones: %0.2f\n",
+  fprintf(stdout, "\nNumber of attempts: %lu\nMax ones rolled: %u\nMin ones rolled:%u\nAverage ones: %0.2lf\n",
     N, max_ones, min_ones, (double)total_ones / (double)N);
   PRINT_TIMER(GravelerKernelTimer);
 
