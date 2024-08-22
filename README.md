@@ -24,8 +24,8 @@ I've separated the results by run configuration (detailed [here](#differences-in
 
 | Configuration | Typical Execution Time (s) | Typical Max Counts |
 |---------------|----------------------------|--------------------|
-| Streaks       | 0.066                      | 10-13              |
-| Total         | 2.93                       | 75-80              |
+| Streaks       | 0.066                      | 14                 |
+| Total         | 0.22                       | 102                |
 
 ## Building and Running
 

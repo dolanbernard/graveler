@@ -29,7 +29,7 @@ void graveler_streaks(size_t n, uint32_t *one_counts, curandState *rand_states) 
   for(i = index; i < N; i += num_threads) {
     uint32_t one_count = 0;
     for(size_t rolls = 0; rolls < 231; rolls++) {
-      uint32_t roll = (uint32_t)(curand_uniform(rand_state) * 3.0 + 0.5f);
+      uint32_t roll = curand(rand_state) % 4;
       if(roll != 0) break;
       ++one_count;
     }
@@ -47,7 +47,7 @@ void graveler_total(size_t n, uint32_t *one_counts, curandState *rand_states) {
   for(i = index; i < N; i += num_threads) {
     uint32_t one_count = 0;
     for(size_t rolls = 0; rolls < 231; rolls++) {
-      uint32_t roll = (uint32_t)(curand_uniform(rand_state) * 3.0 + 0.5f);
+      uint32_t roll = curand(rand_state) % 4;
       if(roll == 0) {
         ++one_count;
       }
