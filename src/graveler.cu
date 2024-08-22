@@ -80,15 +80,23 @@ int main(void) {
   STOP_TIMER(GravelerKernelTimer);
 
   cudaMemcpy(h_one_counts, d_one_counts, N * sizeof(uint32_t), cudaMemcpyDeviceToHost);
-
+  puts("Computation complete");
+  puts("Calculating statistics");
   uint32_t max_ones = 0;
+  uint32_t min_ones = ~0;
+  uint64_t total_ones = 0;
   for(size_t i = 0; i < N; ++i) {
+    total_ones += h_one_counts[i];
     if(h_one_counts[i] > max_ones) {
       max_ones = h_one_counts[i];
     }
+    if(h_one_counts[i] < min_ones) {
+      min_ones = h_one_counts[i];
+    }
   }
+  fprintf(stdout, "\nNumber of attempts: %lu\nMax ones rolled: %u\nMin ones rolled:%u\nAverage ones: %0.2f\n",
+    N, max_ones, min_ones, (double)total_ones / (double)N);
   PRINT_TIMER(GravelerKernelTimer);
-  fprintf(stdout, "\nNumber of attempts: %lu\nMax ones rolled: %u\n", N, max_ones);
 
   cudaFree(d_one_counts);
   cudaFree(d_rand_states);
